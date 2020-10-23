@@ -1,9 +1,11 @@
 /*
 Author: Nicolas ESPINOSA MOOSER
-Date: 22nd Oct 2020
+Started: 22nd Oct 2020
+Updated: 23rd Oct 2020
 */
 
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 const int size = 10;         // Size * Size 
@@ -20,8 +22,11 @@ void printGameBoard(){                          // Print game board for debuggin
     for(int x = 0; x < size; x++){
         cout << x << "   ";
         for(int y = 0; y < size; y++){
-            if(gameBoard[x][y] != -1) cout << " ";
-            cout << gameBoard[x][y] << " ";
+            if(gameBoard[x][y] != -1){
+                cout << " ";
+                cout << gameBoard[x][y] << " ";
+            }
+            else cout << " * ";
         }
         cout << "\n";
     }
@@ -30,11 +35,11 @@ void printGameBoard(){                          // Print game board for debuggin
 
 void printUserBoard(){                          // Print user board unfinished
     cout << "  User Board\n";
-    cout << "     ";
+    cout << "    ";
     for(int i = 0; i < size; i++) cout << i << "  ";
     cout << "\n\n";
     for(int x = 0; x < size; x++){
-        cout << x << "    ";
+        cout << x << "   ";
         for(int y = 0; y < size; y++){
             cout << userBoard[x][y] << "  ";
         }
@@ -62,17 +67,12 @@ int numOfNearbyBombs(int x, int y){
     return nearbyBombs;
 }
 
-void initBoards(){
-    for(int x = 0; x < size; x++){              // "Zero out" boards
-        for(int y = 0; y < size; y++){
-            gameBoard[x][y] = 0;
-            userBoard[x][y] = '-';
-        }
-    }
+void initBoards(int a, int b){
     int bombsPlaced = 0;                        // Place bombs
     while(bombsPlaced < numBombs){
         int x = rand()%size;
         int y = rand()%size;
+        if(x == a && y == b) continue;
         if(gameBoard[x][y] != -1){
             gameBoard[x][y] = -1;
             bombsPlaced++;
@@ -86,14 +86,13 @@ void initBoards(){
 }
 
 void updateUserBoard(int x, int y){
-    // cout << "x = " << x << ", y = " << y << "\n";
     if(!withinBounds(x,y)) return;
-    else if(userBoard[x][y] != '-') return;
+    else if(userBoard[x][y] != '-' || gameBoard[x][y] == -1) return;
     else if(gameBoard[x][y] != -1) userBoard[x][y] = char(gameBoard[x][y] + 48);
     if(withinBounds(x+1,y) && userBoard[x+1][y] == '-' && gameBoard[x+1][y] != -1) updateUserBoard(x+1, y);    // Bottom box
     if(withinBounds(x,y+1) && userBoard[x][y+1] == '-' && gameBoard[x][y+1] != -1) updateUserBoard(x, y+1);    // Right box
     if(withinBounds(x-1,y) && userBoard[x-1][y] == '-' && gameBoard[x-1][y] != -1) updateUserBoard(x-1, y);    // Top box
-    if(withinBounds(x,y-1) && userBoard[x][y-1] == '-' && gameBoard[x][y+1] != -1) updateUserBoard(x, y-1);    // Left box
+    if(withinBounds(x,y-1) && userBoard[x][y-1] == '-' && gameBoard[x][y-1] != -1) updateUserBoard(x, y-1);    // Left box
 }
 
 bool winConditon(){
@@ -117,22 +116,34 @@ void endGamePrint(){
 
 int main(){
     srand(time(0));
-    initBoards();
-    cout << "Choose number of bombs (Default 50): ";
-    cin >> numBombs;
+    for(int x = 0; x < size; x++){              // "Zero out" boards
+        for(int y = 0; y < size; y++){
+            gameBoard[x][y] = 0;
+            userBoard[x][y] = '-';
+        }
+    }
+    printUserBoard();
+    int a,b;
+    do{
+        cout << "Choose 2 numbers between 0 and " << size - 1 << "\n";
+        cin >> a >> b;
+        if(!withinBounds(a,b)) cout << "Invalid input. Please try again\n\n";
+    }while(!withinBounds(a,b));
+    initBoards(a,b);
+    updateUserBoard(a,b);
     while(!endGame){
-        // printGameBoard();
-        printUserBoard();
+        // printGameBoard();        // For debugging
         if(winConditon()){
             endGamePrint();
             cout << "-----------------     YOU WIN      -----------------\n\n\n";
             endGame = true;
         }
         else{
+            printUserBoard();
             cout << "Choose 2 numbers between 0 and " << size - 1 << "\n";
             int x, y;
             cin >> x >> y;
-            if(x >= size || x < 0 || y >= size || y < 0){
+            if(!withinBounds(x,y)){
                 cout << "Invalid input. Please try again\n\n";
             }
             else if(gameBoard[x][y] == -1){
