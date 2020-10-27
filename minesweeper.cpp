@@ -6,6 +6,7 @@ Updated: 23rd Oct 2020
 
 #include <iostream>
 #include <fstream>
+#include <time.h>
 using namespace std;
 
 const int size = 10;         // Size * Size 
