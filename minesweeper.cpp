@@ -1,11 +1,10 @@
 /*
 Author: Nicolas ESPINOSA MOOSER
 Started: 22nd Oct 2020
-Updated: 23rd Oct 2020
+Updated: 29th Nov 2020
 */
 
 #include <iostream>
-#include <fstream>
 #include <time.h>
 using namespace std;
 
