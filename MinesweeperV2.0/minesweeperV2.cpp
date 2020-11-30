@@ -9,16 +9,6 @@ Created: 28th Nov 2020
 #include <vector>
 using namespace std;
 
-/*
-    printUserBoard()
-    withinBounds(int x, int y)
-    numNearbyBombs(int x, int y)
-    initBoards(int a, int b)
-    updateUserBoard(int x, int y)
-    winCondition()
-    endGamePrint()
-*/
-
 bool endGame = false;
 bool exitProgram = false;
 
