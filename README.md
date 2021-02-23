@@ -5,4 +5,7 @@ The original version was programmed as a 1-day challenge from myself and was ver
 
 The Updated mineSweeperV2.cpp has 3 difficulties and a Custom mode, however both versions are still not identical to the original Minesweeper game. I'll update this in the future!
 
+Currently working on:
+  - Bomb revealing algorithm
+
 Enjoy!
